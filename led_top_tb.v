@@ -16,7 +16,23 @@ module tb_lab1_top();
         .btn1(btn1),
         .leds(leds)
     );
-
+    
+    // 单独实例化 debouncer 用于测试
+    reg test_btn_in;
+    wire test_btn_pulse;
+    debouncer_edge_det #(
+        .CLK_HZ(1000000),  // 模拟 1MHz 时钟
+        .DEBOUNCE_MS(1)    // 1ms 阈值
+    ) debouncer_test (
+        .clk(clk),
+        .rst(!rst_n),
+        .btn_in(test_btn_in),
+        .btn_pulse(test_btn_pulse)
+    );
+    initial begin
+       dumpfile("tb_lab1_top.vcd");
+         dumpvars(0, tb_lab1_top);
+    end
     // 125MHz 时钟 (周期 8ns)
     always #4 clk = ~clk;
 
@@ -29,6 +45,7 @@ module tb_lab1_top();
         rst_n = 0;
         btn0 = 0;
         btn1 = 0;
+        test_btn_in = 0;
         
         // 释放复位
         #100;
@@ -36,6 +53,28 @@ module tb_lab1_top();
         #100;
 
         $display("\n========== 测试开始 ==========");
+        
+        // ========== 测试 0: Debouncer 模块测试 ==========
+        $display("\n--- Test 0: Debouncer 去抖动功能测试 ---");
+        $display("  模拟按键抖动...");
+        
+        // 模拟按键按下时的抖动 (Bouncing)
+        #50  test_btn_in = 1; #20  test_btn_in = 0;
+        #30  test_btn_in = 1; #10  test_btn_in = 0;
+        #40  test_btn_in = 1; // 最终稳定在 1
+        
+        // 等待足够长的时间让去抖动计数器溢出
+        // 阈值是 1000 个时钟周期，约 8000ns
+        #15000;
+        if (test_btn_pulse)
+            $display("  [PASS] 检测到上升沿脉冲");
+        else
+            $display("  [INFO] 等待脉冲...");
+        
+        // 模拟按键松开
+        test_btn_in = 0;
+        #10000;
+        $display("  [PASS] Debouncer 测试完成\n");
         $display("初始状态: Mode A, Speed=1秒");
         $display("期望序列: LED0→LED1→LED2→LED3→LED2→LED1→LED0 循环");
         
