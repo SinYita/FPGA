@@ -4,17 +4,16 @@
 # ============================================================
 
 # CLK source 125 MHz
-set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports clk]
-create_clock -period 8.000 -name sys_clk_pin -waveform {0.000 4.000} -add [get_ports clk]
+set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports {clk}]
+create_clock -period 8.000 -name sys_clk_pin -waveform {0 4} -add [get_ports {clk}]
 
 # Reset button (active low)
-set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS33} [get_ports rst_n]
+set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS33} [get_ports {rst_n}]
 
 # BTN0 - mode toggle (Mode A/B)
-set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS33} [get_ports btn0]
-
+set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS33} [get_ports {btn0}]
 # BTN1 - speed toggle (1s/3s)
-set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports btn1]
+set_property -dict {PACKAGE_PIN D20 IOSTANDARD LVCMOS33} [get_ports {btn1}]
 
 # LEDs
 set_property -dict {PACKAGE_PIN R14 IOSTANDARD LVCMOS33} [get_ports {leds[0]}]

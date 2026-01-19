@@ -30,8 +30,8 @@ module tb_lab1_top();
         .btn_pulse(test_btn_pulse)
     );
     initial begin
-       dumpfile("tb_lab1_top.vcd");
-         dumpvars(0, tb_lab1_top);
+       $dumpfile("tb_lab1_top.vcd");
+         $dumpvars(0, tb_lab1_top);
     end
     // 125MHz 时钟 (周期 8ns)
     always #4 clk = ~clk;
